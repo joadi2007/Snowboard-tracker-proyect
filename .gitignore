@@ -218,3 +218,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# KiCad
+*-backups/
+*.kicad_prl
+_autosave-*
+fp-info-cache
+*-cache.lib
+*.bak
+*-bak
+
+# macOS
+.DS_Store
