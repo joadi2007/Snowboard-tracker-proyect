@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 FS = 100             # muestras por segundo (Hz)
 DURACION = 60        # duración de la sesión en segundos
 G = 9.81             # gravedad en m/s²
+LIMITE_GIRO = 2000    # °/s, rango por defecto del giroscopio del MPU6050
 
 rng = np.random.default_rng(42)         # generador de numeros aleatorios
 
@@ -24,7 +25,8 @@ gy = rng.normal(0,2, n)
 gz = rng.normal(0, 2, n)
 
 # --- Saltos: (instante de despegue en s, tiempo en el aire en s) ---
-saltos = [(10.0, 1.3, 180), (25.0, 1.6, 360), (42.0, 2.0, 540)]
+saltos = [(10.0, 1.3, 180), (25.0, 1.6, 360), (42.0, 2.0, 540),
+          (50.0, 1.1, 360), (55.0, 0.8, 360)] 
 for t_despegue, t_vuelo, giro in saltos:
     i_ini = int(t_despegue * FS)        # muestra del despegue
     i_fin = i_ini + int(t_vuelo * FS)   # muestra el aterrizaje 
@@ -49,6 +51,11 @@ for t_despegue, t_vuelo, giro in saltos:
 
 # --- Magnitud total de la aceleración ---
 magnitud = np.sqrt(ax**2 + ay**2 + az**2)
+
+# --- Saturación: el giroscopio no puede medir más allá de su rango ---
+gx = np.clip(gx, -LIMITE_GIRO, LIMITE_GIRO)
+gy = np.clip(gy, -LIMITE_GIRO, LIMITE_GIRO)
+gz = np.clip(gz, -LIMITE_GIRO, LIMITE_GIRO)
 
 # --- Guardar en CSV ---
 datos = np.column_stack((t,ax,ay,az,gx,gy,gz))
