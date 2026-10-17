@@ -18,10 +18,14 @@ ax = rng.normal(0, 0.3, n)        # ruido alrededor de 0
 ay = rng.normal(0, 0.3, n)
 az = G + rng.normal(0, 0.3, n)    # la gravedad se mide en el eje z
 
-# --- Saltos: (instante de despegue en s, tiempo en el aire en s) ---
-saltos = [(10.0, 1.3), (25.0, 1.6), (42.0, 2.0)]
+# --- Giroscopio (grados por segundo): casi quieto, con ruido ---
+gx = rng.normal(0, 2, n)
+gy = rng.normal(0,2, n)
+gz = rng.normal(0, 2, n)
 
-for t_despegue, t_vuelo in saltos:
+# --- Saltos: (instante de despegue en s, tiempo en el aire en s) ---
+saltos = [(10.0, 1.3, 180), (25.0, 1.6, 360), (42.0, 2.0, 540)]
+for t_despegue, t_vuelo, giro in saltos:
     i_ini = int(t_despegue * FS)        # muestra del despegue
     i_fin = i_ini + int(t_vuelo * FS)   # muestra el aterrizaje 
     pico = int(0.1 * FS)                # 0.1 s de pico = 10 muestras
@@ -35,16 +39,21 @@ for t_despegue, t_vuelo in saltos:
     ay[i_ini:i_fin] = rng.normal(0, 0.2, n_vuelo)
     az[i_ini:i_fin] = rng.normal(0, 0.2, n_vuelo)
 
+    # Giro en el aire: velocidad angular constante en el eje z
+    velocidad_giro = giro / t_vuelo             # grados por segundo
+    gz[i_ini:i_fin] = velocidad_giro + rng.normal(0, 2, n_vuelo)
+
     # Aterrizaje: impacto fuerte (~3 g)
     az[i_fin:i_fin + pico] = 5 * G + rng.normal(0, 0.3, pico)
+    
 
 # --- Magnitud total de la aceleración ---
 magnitud = np.sqrt(ax**2 + ay**2 + az**2)
 
 # --- Guardar en CSV ---
-datos = np.column_stack((t, ax, ay, az))
+datos = np.column_stack((t,ax,ay,az,gx,gy,gz))
 np.savetxt('analysis/sesion_simulada.csv', datos,
-           delimiter=',', header="t, ax , ay, az", comments='', fmt='%.4f')
+           delimiter=',', header="t,ax,ay,az,gx,gy,gz", comments='', fmt='%.4f')
 
 # --- Gráfico ---
 plt.figure(figsize=(12, 4))
