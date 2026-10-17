@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 FS = 100             # muestras por segundo (Hz)
 DURACION = 60        # duración de la sesión en segundos
 G = 9.81             # gravedad en m/s²
-LIMITE_GIRO = 2000    # °/s, rango por defecto del giroscopio del MPU6050
+LIMITE_GIRO = 2000   # °/s, rango por defecto del giroscopio del MPU6050
 
 rng = np.random.default_rng(42)         # generador de numeros aleatorios
 
