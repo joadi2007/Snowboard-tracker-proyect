@@ -24,10 +24,10 @@ gx = rng.normal(0, 2, n)
 gy = rng.normal(0,2, n)
 gz = rng.normal(0, 2, n)
 
-# --- Saltos: (instante de despegue en s, tiempo en el aire en s) ---
-saltos = [(10.0, 1.3, 180), (25.0, 1.6, 360), (42.0, 2.0, 540),
-          (50.0, 1.1, 360), (55.0, 0.8, 360)] 
-for t_despegue, t_vuelo, giro in saltos:
+# --- Saltos: (despegue en s, tiempo en el aire en s, giro en grados, eje) ---
+saltos = [(10.0, 1.3, 180, "z"), (25.0, 1.6, 360, "y"), (42.0, 2.0, 540, "z"),
+          (50.0, 1.1, -360, "y"), (55.0, 0.8, 360, "x"), (30.0, 1.5, 360, "y")]
+for t_despegue, t_vuelo, giro, eje in saltos:
     i_ini = int(t_despegue * FS)        # muestra del despegue
     i_fin = i_ini + int(t_vuelo * FS)   # muestra el aterrizaje 
     pico = int(0.1 * FS)                # 0.1 s de pico = 10 muestras
@@ -43,11 +43,12 @@ for t_despegue, t_vuelo, giro in saltos:
 
     # Giro en el aire: velocidad angular constante en el eje z
     velocidad_giro = giro / t_vuelo             # grados por segundo
-    gz[i_ini:i_fin] = velocidad_giro + rng.normal(0, 2, n_vuelo)
-
+    ejes = {"x":gx, "y": gy, "z": gz}
+    ejes[eje][i_ini:i_fin] = velocidad_giro + rng.normal(0, 2, n_vuelo)
     # Aterrizaje: impacto fuerte (~3 g)
     az[i_fin:i_fin + pico] = 5 * G + rng.normal(0, 0.3, pico)
-    
+
+gz[3000:3150] += 150
 
 # --- Magnitud total de la aceleración ---
 magnitud = np.sqrt(ax**2 + ay**2 + az**2)
