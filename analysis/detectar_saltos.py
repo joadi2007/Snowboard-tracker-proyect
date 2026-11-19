@@ -11,7 +11,7 @@ MIN_SECUNDARIO = 90    # grados minimos en el segundo eje
 RATIO_SECUNDARIO = 0.3 # fraccion minima respecto del giro principal
 
 # --- Leer el CSV ---
-datos = np.loadtxt('analysis/sesion_simulada.csv', delimiter=',', skiprows=1)
+datos = np.loadtxt('analysis/sesion_serial.csv', delimiter=',', skiprows=1)
 t = datos[:, 0]
 ax, ay , az = datos[:, 1], datos[:, 2], datos[:, 3]
 gx, gy, gz = datos[:, 4], datos[:, 5], datos[:, 6]
